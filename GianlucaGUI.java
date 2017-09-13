@@ -42,8 +42,6 @@ public class GianlucaGUI extends JFrame {
 		frame.setLayout(frameGrid);
 		frame.add(panel1);
 		frame.add(panel2);
-		frame.setIconImage(new ImageIcon("/Users/marve/Documents/Cashier/JFrameIcon/letter-l.png").getImage());
-//		frame.setIconImage(iconImage.getImage());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(500, 200);
 		frame.setVisible(true);
