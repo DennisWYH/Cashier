@@ -1,0 +1,37 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JTextField;
+
+public class Orders {
+	// Field Variables
+	private List<String[]> ConsumerOrder;
+	
+	
+	// Constructor
+	public Orders(){
+		this.ConsumerOrder = new ArrayList<String[]>();
+	}
+	
+	// Getters
+	public List<String[]> getConsumerOrder() {
+		return ConsumerOrder;
+	}
+	
+	// Setters
+	public void setConsumerOrder(List<String[]> consumerOrder) {
+		this.ConsumerOrder = consumerOrder;
+	}
+	
+	// Method to add new order to field variable
+	public void addNewOrder(List<JTextField> newOrder) {
+		String[] array = new String[4];
+		array[0] = newOrder.get(0).getText();
+		array[1] = newOrder.get(1).getText();
+		array[2] = newOrder.get(2).getText();
+		array[3] = newOrder.get(3).getText();
+		this.ConsumerOrder.add(array);
+	}
+	
+
+}
