@@ -1,0 +1,92 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+
+public class GianlucaActionHandler implements ActionListener {
+
+	List<String[]> dic = new ArrayList<String[]>();
+	private Orders order = new Orders();
+	private JTextField  customerName = new JTextField();
+	private JTextField productName = new JTextField();
+	private JTextField productPrice = new JTextField();
+	private JTextField amount = new JTextField();
+	
+	public GianlucaActionHandler(){
+	}
+	public GianlucaActionHandler(JTextField customer, JTextField productName, JTextField product, JTextField amount){
+		this.customerName = customer;
+		this.productName = productName;
+		this.productPrice = product;
+		this.amount = amount;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		/**
+		 * Add new order to the order List
+		 */
+		
+		if(e.getActionCommand().equals("Submit")){
+			List<JTextField> orders = new ArrayList<JTextField>();
+			orders.add(this.customerName);
+			orders.add(this.productName);
+			orders.add(this.productPrice);
+			orders.add(this.amount);
+			
+			this.order.addNewOrder(orders);
+		}
+		
+		/**
+		 * Create new frame if user request orders for a consumer
+		 */
+		if(e.getActionCommand().equals("Maria")){
+			// Create a dictionary for Mari to store all the orders from "Maria"
+			List<String[]> dicMaria = new ArrayList<String[]>();
+			for (int i = 0 ; i< this.order.getConsumerOrder().size(); i++){
+				String[] temp = this.order.getConsumerOrder().get(i);
+				if(temp[0].equals("Maria")){
+					dicMaria.add(temp);
+					System.out.println("Hello");
+				}
+			}
+			
+			// Transfer List<String[]> to Array[][] so that it can be used for JTable
+			JFrame frameMari = new JFrame("Mari's order");
+			JPanel panelMari = new JPanel();
+			String[] columnNames = {"Customer Name", "Product Name", "Product Price", "Amount"};
+			int sizeMari = dicMaria.size();
+			String[][] mariorders = new String[sizeMari][4];
+			for(int i = 0; i< sizeMari; i++){
+				mariorders[i] = dicMaria.get(i);
+			}
+			
+			// Create frame to show JTable
+			JTable tableMari = new JTable(mariorders, columnNames);
+			panelMari.add(tableMari);	
+			frameMari.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frameMari.setSize(500, 200);
+			frameMari.setVisible(true);
+			frameMari.setLocationRelativeTo(null);
+			frameMari.add(panelMari);
+			
+		}
+//		else if(e.getActionCommand().equals("Yunhai")){
+//			show the new frame
+//		}
+//		else if(e.getActionCommand().equals("Luca")){
+//			show the new frame
+//		}
+//		else{
+//			do something.
+//		}
+		
+	}
+	
+}
