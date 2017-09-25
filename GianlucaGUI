@@ -1,36 +1,58 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.TreeMap;
 
 
-public class GianlucaGUI extends JFrame {
+public class GianlucaGUI extends JFrame implements Observer {
 	
-	private static List<String[]> dic = new ArrayList<String[]>();
-	
+	private static Map<String,List<String>> dic = new TreeMap<String,List<String>>();
+	private Orders model;
 	private static JTextField  customerName = new JTextField();
 	private static JTextField productName = new JTextField();
 	private static JTextField productPrice = new JTextField();
 	private static JTextField amount = new JTextField();
-	
-	private static JButton Mari = new JButton("Maria Grazia");
-	private static JButton Yunhai = new JButton("Yunhai");
-	private static JButton Luca = new JButton("Gianluca");
-	
+	private static JPanel panel2;
+	private static JFrame frame;
 	private static final long serialVersionUID = 1L;
+	private GianlucaActionHandler listener;
+	private NameLinkListener listener2;
+	private CancelListener listener3;
+	private BufferedImage buttonIcon;
 	
-	public GianlucaGUI() {
-		GianlucaActionHandler listener = new GianlucaActionHandler(customerName, productName, productPrice, amount);
+	public GianlucaGUI(Orders model) {
+		this.model = model;
+		this.model.addObserver(this);
+		
+		listener = new GianlucaActionHandler(customerName, productName, productPrice, amount);
+		listener2 = new NameLinkListener(this.model);
+		listener3 = new CancelListener(this.model);
 		JPanel panel1 = new JPanel();
 		GridLayout panel1Grid = new GridLayout(0, 2);
+		panel1.setName("New Order");
+		Border blackline = BorderFactory.createLineBorder(Color.black);
+		panel1.setBorder(BorderFactory.createTitledBorder(blackline,"Data input area"));
 		panel1.setLayout(panel1Grid);
-		panel1.add(new JButton("Customer Name"));
+		panel1.add(new JLabel("Customer Name"));
 		panel1.add(customerName);
-		panel1.add(new JButton("Product Name"));
+		panel1.add(new JLabel("Product Name"));
 		panel1.add(productName);
-		panel1.add(new JButton("Product Price"));
+		panel1.add(new JLabel("Product Price"));
 		panel1.add(productPrice);
-		panel1.add(new JButton("Amount"));
+		panel1.add(new JLabel("Amount"));
 		panel1.add(amount);
 	
 		JButton submit = new JButton("Submit");
@@ -39,97 +61,64 @@ public class GianlucaGUI extends JFrame {
 		submit.addActionListener(listener);
 		panel1.add(submit);
 		
-		JPanel panel2 = new JPanel();
-		GridLayout panel2Grid = new GridLayout(0, 1);
+		panel2 = new JPanel();
+		GridLayout panel2Grid = new GridLayout(0, 2);
 		panel2.setLayout(panel2Grid);
 		
-		
-		Mari.setActionCommand("Maria");
-		Yunhai.setActionCommand("Yunhai");
-		Luca.setActionCommand("Luca");
-		
-		Mari.addActionListener(listener);
-		Yunhai.addActionListener(listener);
-		Luca.addActionListener(listener);
-		
-		panel2.add(Mari);
-		panel2.add(Yunhai);
-		panel2.add(Luca);
-		
-
-		JFrame frame = new JFrame("Gianluca Cashier");
-		
+		frame = new JFrame("Gianluca Cashier");
 		
 		GridLayout frameGrid = new GridLayout(0,2);
 		frame.setLayout(frameGrid);
 		frame.add(panel1);
-		frame.add(panel2);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(500, 200);
+		frame.setSize(700, 300);
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
-
 	}
-	
-	
-	
-
-	public static List<String[]> ShowYunhaiOrders(){
-		List<String[]> dicYunhai = new ArrayList<String[]>();
-		for (String[] array : dic){
-			if(array[0].equals("Yunhai")){
-				dicYunhai.add(array);
-			}
+	protected ImageIcon createImageIcon(String path, String description) {
+		java.net.URL imgURL = getClass().getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL, description);
+		} 
+		else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
 		}
-		JFrame frameYunhai = new JFrame("Yunhai's order");
-		JPanel panelYunhai = new JPanel();
-		String[] columnNames = {"Customer Name", "Product Name", "Product Price", "Amount"};
-		int sizeYunhai = dicYunhai.size();
-		String[][] yunhaiorders = new String[sizeYunhai][4];
-		for(int i = 0; i< sizeYunhai; i++){
-			yunhaiorders[i] = dicYunhai.get(0);
-		}
-		JTable tableYunhai = new JTable(yunhaiorders, columnNames);
-		panelYunhai.add(tableYunhai);	
-		frameYunhai.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frameYunhai.setSize(500, 200);
-		frameYunhai.setVisible(true);
-		frameYunhai.setLocationRelativeTo(null);
-		frameYunhai.add(panelYunhai);
-		return dicYunhai;
-	}
-
-	public static List<String[]> ShowLucaOrders(){
-		List<String[]> dicLuca = new ArrayList<String[]>();
-		for (String[] array : dic){
-			if(array[0].equals("Luca")){
-				dicLuca.add(array);
-			}
-		}
-		JFrame frameLuca = new JFrame("Luca's order");
-		JPanel panelLuca = new JPanel();
-		String[] columnNames = {"Customer Name", "Product Name", "Product Price", "Amount"};
-		int sizeLuca = dicLuca.size();
-		String[][] lucaorders = new String[sizeLuca][4];
-		for(int i = 0; i< sizeLuca; i++){
-			lucaorders[i] = dicLuca.get(0);
-		}
-		JTable tableLuca = new JTable(lucaorders, columnNames);
-		panelLuca.add(tableLuca);	
-		frameLuca.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frameLuca.setSize(500, 200);
-		frameLuca.setVisible(true);
-		frameLuca.setLocationRelativeTo(null);
-		frameLuca.add(panelLuca);
-
-		return dicLuca;
+}
 
 		
-	}
-	
-	
+	/**
+	 * Show the customer name on panel according to model's content.
+	 * Update the frame each time when adding new button on panel
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		dic = model.getData();
+		Iterator<String> keyIter = dic.keySet().iterator();
+		panel2.removeAll();
+		
+		Border blackline = BorderFactory.createLineBorder(Color.black);
+		panel2.setBorder(BorderFactory.createTitledBorder(blackline,"Customer List"));
+		while(keyIter.hasNext()){
+			String userName = keyIter.next();
+			JButton nameButton = new JButton(userName);
+			nameButton.addActionListener(listener2);
+			nameButton.setActionCommand(userName);
+			try {
+				buttonIcon = ImageIO.read(new File("/Users/marve/Documents/workspace/Cachier/src/image/check2.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			JButton cancel = new JButton(new ImageIcon(buttonIcon));
 
-	public static void main(String[] args) {
-		new GianlucaGUI();
+			cancel.setActionCommand(userName);
+			cancel.addActionListener(listener3);
+			panel2.add(nameButton);
+			panel2.add(cancel);
+		}
+		frame.add(panel2);
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
 	}
+
 }
