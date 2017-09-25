@@ -1,0 +1,93 @@
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.Border;
+
+public class GuiForOrderDetail extends JFrame implements Observer {
+
+	private Orders model;
+	private String userName;
+	private String[][] content;
+	private JFrame frameMari;
+	private JPanel panelMari;
+	
+	public GuiForOrderDetail(Orders model, String event){
+		this.model = model;
+		this.userName = event;
+		model.addObserver(this);
+		
+		
+		this.frameMari = new JFrame(userName+" 's order ");
+		this.panelMari = new JPanel();
+		this.panelMari.setName("Order history");
+		
+		String[] columnNames = {"Product Name", "Product Price", "Amount"};
+		
+		List<String> orderArray = new ArrayList<String>();
+		
+		orderArray = model.getData().get(userName);
+		this.content = new String[orderArray.size()/3][3];
+		int counter = 0;
+		for(int i = 0; i< orderArray.size()/3; i++){
+			this.content[i][0] = orderArray.get(counter);
+			this.content[i][1] = orderArray.get(1);
+			this.content[i][2] = orderArray.get(counter+2);
+			counter = counter +3;
+		}	
+		
+		Border blackline = BorderFactory.createLineBorder(Color.black);
+		JTable tableMari = new JTable(content, columnNames);
+		this.panelMari.setBorder(BorderFactory.createTitledBorder(blackline,"order history"));
+		this.panelMari.add(new JScrollPane(tableMari));	
+		this.frameMari.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.frameMari.setSize(500, 200);
+		this.frameMari.setVisible(true);
+//		this.frameMari.setLocationRelativeTo(null);
+		this.frameMari.add(panelMari);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {	
+
+		String[] columnNames = {"Product Name", "Product Price", "Amount"};
+		List<String> orderArray = new ArrayList<String>();
+		orderArray = model.getData().get(userName);
+		
+		
+		if(orderArray == null){
+			frameMari.setVisible(false);
+		}
+		else{
+			this.content = new String[orderArray.size()/3][3];
+			int counter = 0;
+			
+			for(int i = 0; i< orderArray.size()/3; i++){
+				this.content[i][0] = orderArray.get(counter);
+				this.content[i][1] = orderArray.get(1);
+				this.content[i][2] = orderArray.get(counter+2);
+				counter = counter +3;
+			}	
+			
+			JTable tableMari = new JTable(content, columnNames);
+			
+			panelMari.removeAll();
+			
+			panelMari.add(new JScrollPane(tableMari));	
+
+			
+			frameMari.add(panelMari);
+			frameMari.getContentPane().validate();
+			frameMari.getContentPane().repaint();
+
+		}
+	}
+
+}
