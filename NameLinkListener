@@ -1,0 +1,23 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+public class NameLinkListener implements ActionListener {
+	private Orders model;
+	
+	
+	public NameLinkListener(Orders model){
+		this.model = model;
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		new GuiForOrderDetail(this.model,e.getActionCommand());
+	}
+
+}
