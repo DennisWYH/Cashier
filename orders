@@ -1,36 +1,65 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.TreeMap;
 
 import javax.swing.JTextField;
 
-public class Orders {
+public class Orders extends Observable {
 	// Field Variables
-	private List<String[]> ConsumerOrder;
+	private Map<String, List<String>> data;
 	
 	
 	// Constructor
 	public Orders(){
-		this.ConsumerOrder = new ArrayList<String[]>();
+		data = new TreeMap<String, List<String>>();
+	
 	}
 	
 	// Getters
-	public List<String[]> getConsumerOrder() {
-		return ConsumerOrder;
+	public Map<String, List<String>> getData() {
+		return data;
 	}
 	
 	// Setters
-	public void setConsumerOrder(List<String[]> consumerOrder) {
-		this.ConsumerOrder = consumerOrder;
+	public void setData(Map<String, List<String>> data) {
+		this.data = data;
 	}
 	
-	// Method to add new order to field variable
+	
+	
+	/**
+	 *  Method to add new order to orders variable
+	 * @param newOrder
+	 */
 	public void addNewOrder(List<JTextField> newOrder) {
-		String[] array = new String[4];
-		array[0] = newOrder.get(0).getText();
-		array[1] = newOrder.get(1).getText();
-		array[2] = newOrder.get(2).getText();
-		array[3] = newOrder.get(3).getText();
-		this.ConsumerOrder.add(array);
+
+		List<String> list = new ArrayList<String>();
+		String key = newOrder.get(0).getText();
+		if(data.containsKey(key)){
+			list = data.get(key);
+		}
+		list.add(newOrder.get(1).getText());
+		list.add(newOrder.get(2).getText());
+		list.add(newOrder.get(3).getText());
+		data.put(key, list);
+		
+		
+		setChanged();
+		notifyObservers();
+	}
+	
+	/**
+	 *  Method to delete orders in model 
+	 */
+	public void deleteOrder(String key){
+		if(data.containsKey(key)){
+			data.remove(key);
+		}		
+		setChanged();
+		notifyObservers();
 	}
 	
 
